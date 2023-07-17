@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import fileUpload from "express-fileupload";
 import cors from "cors";
+import createHttpError from "http-errors";
 
 // dotenv config
 dotenv.config();
@@ -59,6 +60,22 @@ app.use(
 
 app.get("/", (req, res) => {
   res.send("Hello from server!");
+  throw createHttpError.BadRequest("This route has an Error!");
+});
+
+app.use(async (req, res, next) => {
+  next(createHttpError.NotFound("This route has not exit!"));
+});
+
+// handle http errors
+app.use(async (err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send({
+    error: {
+      status: err.status || 500,
+      message: err.message,
+    },
+  });
 });
 
 export default app;
