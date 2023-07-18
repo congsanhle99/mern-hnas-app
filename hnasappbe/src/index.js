@@ -1,8 +1,25 @@
 import app from "./app.js";
 import logger from "./configs/logger.configs.js";
-
+import mongoose from "mongoose";
 // env variable
+const { DATABASE_URL } = process.env;
 const PORT = process.env.PORT || 8000;
+
+// mongoose connection
+mongoose.connect(DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+  logger.info("Connected to mongoDB.");
+});
+
+// handle connect mongoose errors
+mongoose.connection.on("error", (err) => {
+  logger.error(`mongoDB connection error: ${err}`);
+  process.exit(1);
+});
+
+// mongoose debug mode
+if (process.env.NODE_ENV !== "production") {
+  mongoose.set("debug", true);
+}
 
 let server;
 
