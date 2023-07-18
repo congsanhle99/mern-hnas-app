@@ -8,6 +8,7 @@ import compression from "compression";
 import fileUpload from "express-fileupload";
 import cors from "cors";
 import createHttpError from "http-errors";
+import routes from "./routes/index.js";
 
 // dotenv config
 dotenv.config();
@@ -57,6 +58,9 @@ app.use(
     // origin: "http://localhost:3000/",
   })
 );
+
+// route api v1
+app.use("/api/v1", routes);
 
 app.get("/", (req, res) => {
   res.send("Hello from server!");
